@@ -10,8 +10,11 @@ See LICENSE for licensing information.
 """
 
 import sys
+import zipfile
+# http://stackoverflow.com/questions/41550620/python-docx-get-info-from-dropdownlist-in-table
 
 from docx import Document
+from bs4 import BeautifulSoup
 
 if __name__ == '__main__':
     try:
@@ -31,7 +34,16 @@ if __name__ == '__main__':
     # Make explicit unicode version
     newparatextlist = []
     for paratext in document.paragraphs:
+        print(paratext.text)
         newparatextlist.append(paratext.text)
 
     # Print out text of document with two newlines under each paragraph
     newfile.write('\n\n'.join(str(v) for v in newparatextlist))
+
+    # Get dropbown
+    dropdown = zipfile.ZipFile(sys.argv[1])
+    #xml_data = dropdown.read('document.xml')
+    #print(xml_data)
+    dropdown.close()
+
+    # soup = BeautifulSoup(xml_data)
