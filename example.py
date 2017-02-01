@@ -11,6 +11,7 @@ See LICENSE for licensing information.
 
 import sys
 import zipfile
+import re
 # http://stackoverflow.com/questions/41550620/python-docx-get-info-from-dropdownlist-in-table
 
 from docx import Document
@@ -29,21 +30,26 @@ if __name__ == '__main__':
         exit()
 
     # Fetch all the text out of the document we just created
-    # paratextlist = getdocumenttext(document)
-
     # Make explicit unicode version
     newparatextlist = []
     for paratext in document.paragraphs:
-        print(paratext.text)
         newparatextlist.append(paratext.text)
 
     # Print out text of document with two newlines under each paragraph
     newfile.write('\n\n'.join(str(v) for v in newparatextlist))
 
-    # Get dropbown
+    # Get dropdown
     dropdown = zipfile.ZipFile(sys.argv[1])
-    #xml_data = dropdown.read('document.xml')
-    #print(xml_data)
+    xml_data = dropdown.read('word/document.xml')
     dropdown.close()
 
-    # soup = BeautifulSoup(xml_data)
+    soup = BeautifulSoup(xml_data, 'xml')
+    dropdownList = soup.findAll('sdtContent')
+
+    sdtContentElements = []
+    for element in dropdownList:
+        sdtContentElements.append(element)
+    
+    #activity = re.sub('<[^>]*>', '', str(element.findAll('t')[0]))
+    #print(activity)
+
