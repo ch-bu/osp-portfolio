@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 """
 This file opens a docx (Office 2007) file and dumps the text.
 
@@ -27,13 +29,30 @@ def unzip_files(compressed_file):
     zip_ref.extractall(temp_path)
     zip_ref.close()
 
+    # Analyze data
+    analyze_files(temp_path)
+
+    # Delete directory for new subject
+    shutil.rmtree(temp_path)
+
+    # Return results
     return None
 
 def analyze_files(temp_path):
 
+    # Get all docx files
     word_files = [word_file for word_file in glob.iglob(temp_path + '\\**\\*.docx', recursive=True)]
 
-    print(word_files)
+    # Loop over every word file
+    for word_file in word_files:
+        # Get word document
+        document = Document(word_file).paragraphs
+
+        # Get title of document
+        print(document[0].text.strip())
+
+    return word_files
+
 
 # Run code only if the program is run by itself and not
 # when it is imported from another module
