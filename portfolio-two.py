@@ -38,6 +38,19 @@ def unzip_files(compressed_file):
     # Return results
     return None
 
+def return_file_content(document):
+
+    results = {}
+
+    # Add title of document to results
+    results['title'] = document.paragraphs[0].text
+    results['content'] = ''
+
+    for paragraph in document.paragraphs:
+        results['content'] = results['content'] + paragraph.text
+
+    return results
+
 def analyze_files(temp_path):
 
     # Get all docx files
@@ -46,12 +59,15 @@ def analyze_files(temp_path):
     # Loop over every word file
     for word_file in word_files:
         # Get word document
-        document = Document(word_file).paragraphs
+        document = Document(word_file)
 
-        # Get title of document
-        print(document[0].text.strip())
+        res = return_file_content(document)
+
+        print(res)
 
     return word_files
+
+
 
 
 # Run code only if the program is run by itself and not
