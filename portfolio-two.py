@@ -43,11 +43,16 @@ def return_file_content(document):
     results = {}
 
     # Add title of document to results
-    results['title'] = document.paragraphs[0].text
-    results['content'] = ''
+    title = document.paragraphs[0].text
+    results[title] = ''
 
-    for paragraph in document.paragraphs:
-        results['content'] = results['content'] + paragraph.text
+    # Loop over every paragraph
+    # Make sure not to include the first paragraph
+    # that includes the title
+    iter_paragraphs = iter(document.paragraphs)
+    next(iter_paragraphs)
+    for paragraph in iter_paragraphs:
+        results[title] = results[title] + paragraph.text
 
     return results
 
