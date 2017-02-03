@@ -57,11 +57,6 @@ def return_file_content(document):
     # Get data from current word file
     results[title] = get_data(title, iter_paragraphs)
 
-    # # Loop over every paragraph
-    # for paragraph in iter_paragraphs:
-    #     # Append new paragraph to previous paragraph
-    #     results[title] = results[title] + ' ' + paragraph.text
-
     # Return content of word file in dictionary
     return results
 

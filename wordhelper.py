@@ -11,6 +11,18 @@ Part of Python's docx module - http://github.com/mikemaccana/python-docx
 See LICENSE for licensing information.
 """
 
+def get_simple_data(paragraphs):
+	# Init result string
+	result = ''
+
+	# Loop over every paragraph
+	for paragraph in paragraphs:
+	    # Append new paragraph to previous paragraph
+	    result = result + ' ' + paragraph.text
+
+	# Return string of paragraphs
+	return result
+
 def get_data(title, iter_paragraphs):
 
 
@@ -24,17 +36,12 @@ def get_data(title, iter_paragraphs):
 		return 'dritte Tätigkeit'
 	elif title == 'Begleitung Alltag Lehrperson':
 		return 'Begleitung Alltag'
-	elif title == 'Wahlbeobachtung':
-		return 'Wahlbeobachtung'
-	elif title == 'Erste Durchführung einer zentralen Tätigkeit':
-		return 'Erste Durchführung zentrale Tätigkeit'
-	elif title == 'Zweite Durchführung einer zentralen Tätigkeit':
-		return 'Zweite Durchführung zentrale Tätigkeit'
-	elif title == 'Wahl-Aufgabe':
-		return 'Wahl-Aufgabe'
-	elif title == 'Interview mit einer Lehrkraft':
-		return 'Interview Lehrkraft'
-	elif title == 'Schlüsselsituation':
-		return 'Schlüsselsituation'
+	elif title == 'Wahlbeobachtung' or \
+		 title == 'Erste Durchführung einer zentralen Tätigkeit' or \
+		 title == 'Zweite Durchführung einer zentralen Tätigkeit' or \
+		 title == 'Wahl-Aufgabe' or \
+		 title == 'Interview mit einer Lehrkraft' or \
+		 title == 'Schlüsselsituation':
+		return get_simple_data(iter_paragraphs)
 	else:
 		return None
