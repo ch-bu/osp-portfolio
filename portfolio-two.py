@@ -21,6 +21,7 @@ import os
 import shutil
 from docx import Document
 from bs4 import BeautifulSoup
+from wordhelper import get_data
 
 
 def unzip_files(compressed_file):
@@ -53,10 +54,13 @@ def return_file_content(document):
     iter_paragraphs = iter(document.paragraphs)
     next(iter_paragraphs)
 
-    # Loop over every paragraph
-    for paragraph in iter_paragraphs:
-        # Append new paragraph to previous paragraph
-        results[title] = results[title] + ' ' + paragraph.text
+    # Get data from current word file
+    results[title] = get_data(title, iter_paragraphs)
+
+    # # Loop over every paragraph
+    # for paragraph in iter_paragraphs:
+    #     # Append new paragraph to previous paragraph
+    #     results[title] = results[title] + ' ' + paragraph.text
 
     # Return content of word file in dictionary
     return results
@@ -66,6 +70,7 @@ def analyze_files(temp_path):
     # Get all docx files
     word_files = [word_file for word_file in glob.iglob(temp_path + '\\**\\*.docx', recursive=True)]
 
+    # Store results of all word files in this variable
     res = []
 
     # Loop over every word file
@@ -88,37 +93,18 @@ if __name__ == '__main__':
     temp_path = file_path + '\\temp'
 
     # Get all compressed files and save path in zip_files
-    #file_extensions = ['.zip', '.tar', '.7s']
+    # file_extensions = ['.zip', '.tar', '.7s']
     file_extensions = ['.zip']
     zip_files = [portfolio for portfolio in os.listdir(portfolio_path) if portfolio.endswith(tuple(file_extensions))]
 
-    # Unzip all files
-    unzipped_files = list(map(lambda compressed_file: unzip_files(portfolio_path + '\\' + compressed_file), zip_files))
+    # Get data from all subjects
+    data_subjects = list(map(lambda compressed_file: unzip_files(portfolio_path + '\\' + compressed_file), zip_files))
 
-    print(unzipped_files)
-    # Analyze all files
-    #results = analyze_files(temp_path)
+    print(data_subjects)
 
-    # try:
-    #     document = Document(sys.argv[1])
-    #     newfile = open(sys.argv[2], 'w')
-    # except:
-    #     print(
-    #         "Please supply an input and output file. For example:\n"
-    #         "  example-extracttext.py 'My Office 2007 document.docx' 'outp"
-    #         "utfile.txt'"
-    #     )
-    #     exit()
-
-    # Fetch all the text out of the document we just created
-    # Make explicit unicode version
-    # newparatextlist = []
-    # for paratext in document.paragraphs:
-    #     newparatextlist.append(paratext.text)
-
-    # # Print out text of document with two newlines under each paragraph
-    # newfile.write('\n\n'.join(str(v) for v in newparatextlist))
-
+    # Loop over every subject 
+    # for subject in data_subjects:
+        # 
     # # Get dropdown
     # dropdown = zipfile.ZipFile(sys.argv[1])
     # xml_data = dropdown.read('word/document.xml')
