@@ -30,30 +30,35 @@ def unzip_files(compressed_file):
     zip_ref.close()
 
     # Analyze data
-    analyze_files(temp_path)
+    subject_results = analyze_files(temp_path)
 
     # Delete directory for new subject
     shutil.rmtree(temp_path)
 
     # Return results
-    return None
+    return subject_results
 
 def return_file_content(document):
 
+    # Store every result in dictionary that
+    # can be processed later
     results = {}
 
     # Add title of document to results
     title = document.paragraphs[0].text
     results[title] = ''
 
-    # Loop over every paragraph
     # Make sure not to include the first paragraph
     # that includes the title
     iter_paragraphs = iter(document.paragraphs)
     next(iter_paragraphs)
-    for paragraph in iter_paragraphs:
-        results[title] = results[title] + paragraph.text
 
+    # Loop over every paragraph
+    for paragraph in iter_paragraphs:
+        # Append new paragraph to previous paragraph
+        results[title] = results[title] + ' ' + paragraph.text
+
+    # Return content of word file in dictionary
     return results
 
 def analyze_files(temp_path):
@@ -61,18 +66,16 @@ def analyze_files(temp_path):
     # Get all docx files
     word_files = [word_file for word_file in glob.iglob(temp_path + '\\**\\*.docx', recursive=True)]
 
+    res = []
+
     # Loop over every word file
     for word_file in word_files:
         # Get word document
         document = Document(word_file)
 
-        res = return_file_content(document)
+        res.append(return_file_content(document))
 
-        print(res)
-
-    return word_files
-
-
+    return res
 
 
 # Run code only if the program is run by itself and not
@@ -85,14 +88,16 @@ if __name__ == '__main__':
     temp_path = file_path + '\\temp'
 
     # Get all compressed files and save path in zip_files
-    file_extensions = ['.zip', '.tar', '.7s']
+    #file_extensions = ['.zip', '.tar', '.7s']
+    file_extensions = ['.zip']
     zip_files = [portfolio for portfolio in os.listdir(portfolio_path) if portfolio.endswith(tuple(file_extensions))]
 
     # Unzip all files
     unzipped_files = list(map(lambda compressed_file: unzip_files(portfolio_path + '\\' + compressed_file), zip_files))
 
+    print(unzipped_files)
     # Analyze all files
-    results = analyze_files(temp_path)
+    #results = analyze_files(temp_path)
 
     # try:
     #     document = Document(sys.argv[1])
