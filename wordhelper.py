@@ -35,13 +35,19 @@ def get_person(person_string):
 
 	return result
 
+def get_activity(document, iter_paragraphs):
+
+	print(document)
+
+	return None
+
 def get_data(title, iter_paragraphs, document):
 	# Check which word file is analyzed and behave
 	# appropriately
 	if title == 'Zu Ihrer Person':
-		print(get_person(get_simple_data(iter_paragraphs)))
-		return 'Ich bin\'s halt'
+		return get_person(get_simple_data(iter_paragraphs))
 	elif title == 'Beobachten. Erste Tätigkeit':
+		print(get_activity(document, iter_paragraphs))
 		return 'erste Tätigkeit'
 	elif title == 'Beobachten. Zweite Tätigkeit':
 		return 'zweite Tätigkeit'

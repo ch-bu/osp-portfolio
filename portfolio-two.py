@@ -28,6 +28,7 @@ def unzip_files(compressed_file):
     # Unzip file
     zip_ref = zipfile.ZipFile(compressed_file, 'r')
     zip_ref.extractall(temp_path)
+    print(zip_ref)
     zip_ref.close()
 
     # Analyze data
