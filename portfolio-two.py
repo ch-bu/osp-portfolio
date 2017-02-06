@@ -20,16 +20,14 @@ import glob
 import os
 import shutil
 from docx import Document
-from bs4 import BeautifulSoup
 from wordhelper import get_data
+import json
 
 
 def unzip_files(compressed_file):
     # Unzip file
     zip_ref = zipfile.ZipFile(compressed_file, 'r')
     zip_ref.extractall(temp_path)
-    print(zip_ref)
-    zip_ref.close()
 
     # Analyze data
     subject_results = analyze_files(temp_path)
@@ -37,10 +35,13 @@ def unzip_files(compressed_file):
     # Delete directory for new subject
     shutil.rmtree(temp_path)
 
+    # Close zip file
+    zip_ref.close()
+
     # Return results
     return subject_results
 
-def return_file_content(document):
+def return_file_content(document, word_file):
 
     # Store every result in dictionary that
     # can be processed later
@@ -56,7 +57,7 @@ def return_file_content(document):
     next(iter_paragraphs)
 
     # Get data from current word file
-    results[title] = get_data(title, iter_paragraphs, document)
+    results[title] = get_data(title, iter_paragraphs, document, word_file)
 
     # Return content of word file in dictionary
     return results
@@ -74,7 +75,7 @@ def analyze_files(temp_path):
         # Get word document
         document = Document(word_file)
 
-        res.append(return_file_content(document))
+        res.append(return_file_content(document, word_file))
 
     return res
 
@@ -98,9 +99,8 @@ if __name__ == '__main__':
 
     # print(data_subjects)
 
-    # Loop over every subject 
-    # for subject in data_subjects:
-        # 
+    json.dump(data_subjects, open('test.txt', 'w'))
+
     # # Get dropdown
     # dropdown = zipfile.ZipFile(sys.argv[1])
     # xml_data = dropdown.read('word/document.xml')
