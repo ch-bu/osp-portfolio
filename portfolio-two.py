@@ -98,25 +98,18 @@ if __name__ == '__main__':
     # Get data from all subjects
     data_subjects = list(map(lambda compressed_file: unzip_files(portfolio_path + '\\' + compressed_file), zip_files))
 
-    # print(data_subjects)
-
-    # json.dump(data_subjects, open('test.txt', 'w'))
-
-
-    # Key keys
+    # We want to store the data in a csv file
+    # First, we need to get the column names
     keys = [list(word_file.keys())[0] for word_file in data_subjects[0]]
-    print(keys)
 
     # # Write results to disk
-    # with open('mycsvfile.csv', 'wb') as f:  # Just use 'w' mode in 3.x
+    with open('mycsvfile.csv', 'w') as f:
+        for subject in data_subjects:
+            for word_file in subject:
 
-    #     for subject in data_subjects:
-    #         # print(subject)
-
-    #         for word_file in subject:
-    #             print(word_file.keys())
-    #             # print(subject[1].keys())
-    #             # w = csv.DictWriter(f, word_file.keys())
-    #             # w.writeheader()
-    #             # w.writerow(word_file)
+                key = list(word_file.keys())[0]
+                if key == "Zu Ihrer Person":
+                    my_dict = word_file['Zu Ihrer Person']
+                    w = csv.DictWriter(f, my_dict.keys(), delimiter=',', lineterminator='\n')
+                    w.writerow(my_dict)
 
