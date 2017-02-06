@@ -47,14 +47,13 @@ def get_data(title, iter_paragraphs, document):
 		return 'zweite Tätigkeit'
 	elif title == 'Beobachten. Dritte Tätigkeit':
 		return 'dritte Tätigkeit'
-	elif title == 'Begleitung Alltag Lehrperson':
-		return 'Begleitung Alltag'
-	elif title == 'Wahlbeobachtung' or \
-		 title == 'Erste Durchführung einer zentralen Tätigkeit' or \
-		 title == 'Zweite Durchführung einer zentralen Tätigkeit' or \
-		 title == 'Wahl-Aufgabe' or \
-		 title == 'Interview mit einer Lehrkraft' or \
-		 title == 'Schlüsselsituation':
+	elif title == 'Begleitung Alltag Lehrperson' or \
+		title == 'Wahlbeobachtung' or \
+		title == 'Erste Durchführung einer zentralen Tätigkeit' or \
+		title == 'Zweite Durchführung einer zentralen Tätigkeit' or \
+		title == 'Wahl-Aufgabe' or \
+		title == 'Interview mit einer Lehrkraft' or \
+		title == 'Schlüsselsituation':
 		return get_simple_data(iter_paragraphs)
 	else:
 		return None
