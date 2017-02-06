@@ -98,18 +98,37 @@ if __name__ == '__main__':
     # Get data from all subjects
     data_subjects = list(map(lambda compressed_file: unzip_files(portfolio_path + '\\' + compressed_file), zip_files))
 
-    # We want to store the data in a csv file
-    # First, we need to get the column names
-    keys = [list(word_file.keys())[0] for word_file in data_subjects[0]]
-
-    # # Write results to disk
+    # Write results to disk
     with open('mycsvfile.csv', 'w') as f:
         for subject in data_subjects:
+
+            my_dict = {}
+
+            # Loop over every file
             for word_file in subject:
-
+                # Get key of file
                 key = list(word_file.keys())[0]
-                if key == "Zu Ihrer Person":
-                    my_dict = word_file['Zu Ihrer Person']
-                    w = csv.DictWriter(f, my_dict.keys(), delimiter=',', lineterminator='\n')
-                    w.writerow(my_dict)
 
+                # Add personal information
+                if key == 'Zu Ihrer Person':
+                    my_dict = {**word_file[key]}
+                elif key == 'Beobachten. Dritte Tätigkeit':
+                    curr_dict = word_file['Beobachten. Dritte Tätigkeit']
+                    my_dict['beobachten.three.activity'] = curr_dict['activity']
+                    my_dict['beobachten.three.content'] = curr_dict['content']
+                elif key == 'Beobachten. Zweite Tätigkeit':
+                    curr_dict = word_file['Beobachten. Zweite Tätigkeit']
+                    my_dict['beobachten.two.activity'] = curr_dict['activity']
+                    my_dict['beobachten.two.content'] = curr_dict['content']
+                elif key == 'Beobachten. Erste Tätigkeit':
+                    curr_dict = word_file['Beobachten. Erste Tätigkeit']
+                    my_dict['beobachten.one.activity'] = curr_dict['activity']
+                    my_dict['beobachten.one.content'] = curr_dict['content']
+                else:
+                    my_dict[list(word_file.keys())[0]] = word_file[key]
+
+            w = csv.DictWriter(f, my_dict.keys(), delimiter=',', lineterminator='\n')
+            w.writerow(my_dict)
+
+
+        w.writeheader()
