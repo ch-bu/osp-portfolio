@@ -55,7 +55,7 @@ def return_file_content(document):
     next(iter_paragraphs)
 
     # Get data from current word file
-    results[title] = get_data(title, iter_paragraphs)
+    results[title] = get_data(title, iter_paragraphs, document)
 
     # Return content of word file in dictionary
     return results
@@ -95,7 +95,7 @@ if __name__ == '__main__':
     # Get data from all subjects
     data_subjects = list(map(lambda compressed_file: unzip_files(portfolio_path + '\\' + compressed_file), zip_files))
 
-    print(data_subjects)
+    # print(data_subjects)
 
     # Loop over every subject 
     # for subject in data_subjects:

@@ -1,14 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import re
+
 """
-This file opens a docx (Office 2007) file and dumps the text.
-
-If you need to extract text from documents, use this file as a basis for your
-work.
-
-Part of Python's docx module - http://github.com/mikemaccana/python-docx
-See LICENSE for licensing information.
+Put description here
 """
 
 def get_simple_data(paragraphs):
@@ -23,10 +19,27 @@ def get_simple_data(paragraphs):
 	# Return string of paragraphs
 	return result
 
-def get_data(title, iter_paragraphs):
 
+def get_person(person_string):
+	# Gets the values of the specific person
 
+	first_name = re.search('Vorname:(.+?)Nachname', person_string).group(1).strip()
+	last_name = re.search('Nachname:(.+?)Matrikelnummer', person_string).group(1).strip()
+	number = re.search('Matrikelnummer:(.+?)E-Mail', person_string).group(1).strip()
+	mail = re.search('E-Mail:(.+?)Hauptfach', person_string).group(1).strip()
+	subject_one = re.search('Hauptfach 1:(.+?)Hauptfach', person_string).group(1).strip()
+	subject_two = re.search('Hauptfach 2:(.+?)$', person_string).group(1).strip()
+
+	result = {'Vorname': first_name, 'Nachname': last_name, 'Matrikelnummer': number, \
+		'Mail': mail, 'Hauptfach_1': subject_one, 'Hauptfach_2': subject_two}
+
+	return result
+
+def get_data(title, iter_paragraphs, document):
+	# Check which word file is analyzed and behave
+	# appropriately
 	if title == 'Zu Ihrer Person':
+		print(get_person(get_simple_data(iter_paragraphs)))
 		return 'Ich bin\'s halt'
 	elif title == 'Beobachten. Erste Tätigkeit':
 		return 'erste Tätigkeit'
@@ -45,3 +58,5 @@ def get_data(title, iter_paragraphs):
 		return get_simple_data(iter_paragraphs)
 	else:
 		return None
+
+
