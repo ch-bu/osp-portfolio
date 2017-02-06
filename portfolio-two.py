@@ -22,6 +22,7 @@ import shutil
 from docx import Document
 from wordhelper import get_data
 import json
+import csv
 
 
 def unzip_files(compressed_file):
@@ -99,21 +100,23 @@ if __name__ == '__main__':
 
     # print(data_subjects)
 
-    json.dump(data_subjects, open('test.txt', 'w'))
+    # json.dump(data_subjects, open('test.txt', 'w'))
 
-    # # Get dropdown
-    # dropdown = zipfile.ZipFile(sys.argv[1])
-    # xml_data = dropdown.read('word/document.xml')
-    # dropdown.close()
 
-    # soup = BeautifulSoup(xml_data, 'xml')
-    # dropdownList = soup.findAll('sdtContent')
+    # Key keys
+    keys = [list(word_file.keys())[0] for word_file in data_subjects[0]]
+    print(keys)
 
-    # sdtContentElements = []
-    # for element in dropdownList:
-    #     sdtContentElements.append(element)
-    
-    #activity = re.sub('<[^>]*>', '', str(element.findAll('t')[0]))
-    #print(activity)
+    # # Write results to disk
+    # with open('mycsvfile.csv', 'wb') as f:  # Just use 'w' mode in 3.x
 
+    #     for subject in data_subjects:
+    #         # print(subject)
+
+    #         for word_file in subject:
+    #             print(word_file.keys())
+    #             # print(subject[1].keys())
+    #             # w = csv.DictWriter(f, word_file.keys())
+    #             # w.writeheader()
+    #             # w.writerow(word_file)
 
