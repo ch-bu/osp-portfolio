@@ -15,6 +15,7 @@ See LICENSE for licensing information.
 
 import sys
 import zipfile
+import tarfile
 import re
 import glob
 import os
@@ -26,18 +27,31 @@ import csv
 
 
 def unzip_files(compressed_file):
-    # Unzip file
-    zip_ref = zipfile.ZipFile(compressed_file, 'r')
-    zip_ref.extractall(temp_path)
 
-    # Analyze data
-    subject_results = analyze_files(temp_path)
+    # Decompress zip file
+    if compressed_file.endswith('.zip'):
+        # Unzip file
+        zip_ref = zipfile.ZipFile(compressed_file, 'r')
+        zip_ref.extractall(temp_path)
+
+        # Analyze data
+        subject_results = analyze_files(temp_path)
+
+        # Close zip file
+        zip_ref.close()
+    # Decompress tar file
+    elif compressed_file.endswith('.tar'):
+        tar = tarfile.open(compressed_file, "r:")
+        tar.extractall(temp_path)
+
+        # Analyze data
+        subject_results = analyze_files(temp_path)
+
+        # Close tar file
+        tar.close()
 
     # Delete directory for new subject
     shutil.rmtree(temp_path)
-
-    # Close zip file
-    zip_ref.close()
 
     # Return results
     return subject_results
@@ -92,7 +106,7 @@ if __name__ == '__main__':
 
     # Get all compressed files and save path in zip_files
     # file_extensions = ['.zip', '.tar', '.7s']
-    file_extensions = ['.zip']
+    file_extensions = ['.zip', '.tar']
     zip_files = [portfolio for portfolio in os.listdir(portfolio_path) if portfolio.endswith(tuple(file_extensions))]
 
     # Get data from all subjects
@@ -100,7 +114,7 @@ if __name__ == '__main__':
 
 
     # Write results to disk
-    with open('mycsvfile.csv', 'w') as f:
+    with open('results/data.csv', 'w') as f:
 
         # Create writer for csv file
         writer = csv.writer(f, delimiter=';', quotechar='"', quoting=csv.QUOTE_MINIMAL, lineterminator='\n')
