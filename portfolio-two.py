@@ -98,8 +98,28 @@ if __name__ == '__main__':
     # Get data from all subjects
     data_subjects = list(map(lambda compressed_file: unzip_files(portfolio_path + '\\' + compressed_file), zip_files))
 
+
     # Write results to disk
     with open('mycsvfile.csv', 'w') as f:
+
+        # Create writer for csv file
+        writer = csv.writer(f, delimiter=';', quotechar='"', quoting=csv.QUOTE_MINIMAL, lineterminator='\n')
+
+        # Write header
+        writer.writerow(['Vorname', 'Nachname', 'Matrikelnummer',
+                        'Mail', 'Hauptfach.1', 'Hauptfach.2',
+                        'Begleitung Alltag Lehrperson', 'beobachten.one.activity',
+                        'beobachten.one.content', 'beobachten.two.activity',
+                        'beobachten.two.content', 'beobachten.three.activity',
+                        'beobachten.three.activity', 'beobachten.three.content',
+                        'Wahlbeobachtung',
+                        'Erste Durchführung einer zentralen Tätigkeit',
+                        'Zweite Durchführung einer zentralen Tätigkeit',
+                        'Schlüsselsituation',
+                        'Interview mit einer Lehrkraft',
+                        'Wahl-Aufgabe'])
+
+        # Loop over every subject
         for subject in data_subjects:
 
             my_dict = {}
@@ -111,24 +131,43 @@ if __name__ == '__main__':
 
                 # Add personal information
                 if key == 'Zu Ihrer Person':
-                    my_dict = {**word_file[key]}
-                elif key == 'Beobachten. Dritte Tätigkeit':
-                    curr_dict = word_file['Beobachten. Dritte Tätigkeit']
+                    curr_dict = word_file[key]
+                    my_dict['Vorname'] = curr_dict['Vorname']
+                    my_dict['Nachname'] = curr_dict['Nachname']
+                    my_dict['Matrikelnummer'] = curr_dict['Matrikelnummer']
+                    my_dict['Mail'] = curr_dict['Mail']
+                    my_dict['Hauptfach.1'] = curr_dict['Hauptfach_1']
+                    my_dict['Hauptfach.2'] = curr_dict['Hauptfach_2']
+                    # my_dict = {**word_file[key]}
+                if key == 'Beobachten. Dritte Tätigkeit':
+                    curr_dict = word_file[key]
                     my_dict['beobachten.three.activity'] = curr_dict['activity']
                     my_dict['beobachten.three.content'] = curr_dict['content']
                 elif key == 'Beobachten. Zweite Tätigkeit':
-                    curr_dict = word_file['Beobachten. Zweite Tätigkeit']
+                    curr_dict = word_file[key]
                     my_dict['beobachten.two.activity'] = curr_dict['activity']
                     my_dict['beobachten.two.content'] = curr_dict['content']
                 elif key == 'Beobachten. Erste Tätigkeit':
-                    curr_dict = word_file['Beobachten. Erste Tätigkeit']
+                    curr_dict = word_file[key]
                     my_dict['beobachten.one.activity'] = curr_dict['activity']
                     my_dict['beobachten.one.content'] = curr_dict['content']
                 else:
-                    my_dict[list(word_file.keys())[0]] = word_file[key]
+                    my_dict[key] = word_file[key]
 
-            w = csv.DictWriter(f, my_dict.keys(), delimiter=',', lineterminator='\n')
-            w.writerow(my_dict)
+            # Write row for subject
+            writer.writerow([my_dict['Vorname'], my_dict['Nachname'], my_dict['Matrikelnummer'],
+                            my_dict['Mail'], my_dict['Hauptfach.1'], my_dict['Hauptfach.2'],
+                            my_dict['Begleitung Alltag Lehrperson'], my_dict['beobachten.one.activity'],
+                            my_dict['beobachten.one.content'], my_dict['beobachten.two.activity'],
+                            my_dict['beobachten.two.content'], my_dict['beobachten.three.activity'],
+                            my_dict['beobachten.three.activity'], my_dict['beobachten.three.content'],
+                            my_dict['Wahlbeobachtung'],
+                            my_dict['Erste Durchführung einer zentralen Tätigkeit'],
+                            my_dict['Zweite Durchführung einer zentralen Tätigkeit'],
+                            my_dict['Schlüsselsituation'],
+                            my_dict['Interview mit einer Lehrkraft'],
+                            my_dict['Wahl-Aufgabe']])
+            # w = csv.DictWriter(f, my_dict.keys(), delimiter=';', lineterminator='\n')
+            # w.writerow(my_dict)
 
-
-        w.writeheader()
+        # w.writeheader()
