@@ -2,13 +2,12 @@
 # -*- coding: utf-8 -*-
 
 """
-This file opens a docx (Office 2007) file and dumps the text.
+This files converts multiple word documents for the osp-internship
+into a spreadsheet.
 
-If you need to extract text from documents, use this file as a basis for your
-work.
-
-Part of Python's docx module - http://github.com/mikemaccana/python-docx
-See LICENSE for licensing information.
+Compressed folders are uncompressed and every word-file is
+read for its contents. The content is then converted to
+a csv file which is then converted to a excel spreadsheet.
 """
 
 # http://stackoverflow.com/questions/41550620/python-docx-get-info-from-dropdownlist-in-table
@@ -98,7 +97,7 @@ def analyze_files(temp_path):
 # Run code only if the program is run by itself and not
 # when it is imported from another module
 if __name__ == '__main__':
-    
+
     # Get dir of portfolio folder two
     file_path = os.path.dirname(os.path.realpath(__file__))
     portfolio_path = file_path + '\\portfolios-two'
@@ -122,9 +121,9 @@ if __name__ == '__main__':
         # Write header
         writer.writerow(['Vorname', 'Nachname', 'Matrikelnummer',
                         'Mail', 'Hauptfach.1', 'Hauptfach.2',
-                        'Begleitung Alltag Lehrperson', 'beobachten.one.activity',
-                        'beobachten.one.content', 'beobachten.two.activity',
-                        'beobachten.two.content', 'beobachten.three.activity',
+                        'Begleitung Alltag Lehrperson',
+                        'beobachten.one.activity', 'beobachten.one.content',
+                        'beobachten.two.activity', 'beobachten.two.content',
                         'beobachten.three.activity', 'beobachten.three.content',
                         'Wahlbeobachtung',
                         'Erste Durchführung einer zentralen Tätigkeit',
@@ -165,23 +164,25 @@ if __name__ == '__main__':
                     curr_dict = word_file[key]
                     my_dict['beobachten.one.activity'] = curr_dict['activity']
                     my_dict['beobachten.one.content'] = curr_dict['content']
-                else:
-                    my_dict[key] = word_file[key]
+                elif key == 'Wahlbeobachtung' or \
+                     key == 'Erste Durchführung einer zentralen Tätigkeit' or \
+                     key == 'Zweite Durchführung einer zentralen Tätigkeit' or \
+                     key == 'Schlüsselsituation' or \
+                     key == 'Begleitung Alltag Lehrperson' or \
+                     key == 'Interview mit einer Lehrkraft' or \
+                     key == 'Wahl-Aufgabe':
+                        my_dict[key] = word_file[key]
 
             # Write row for subject
-            writer.writerow([my_dict['Vorname'], my_dict['Nachname'], my_dict['Matrikelnummer'],
-                            my_dict['Mail'], my_dict['Hauptfach.1'], my_dict['Hauptfach.2'],
-                            my_dict['Begleitung Alltag Lehrperson'], my_dict['beobachten.one.activity'],
-                            my_dict['beobachten.one.content'], my_dict['beobachten.two.activity'],
-                            my_dict['beobachten.two.content'], my_dict['beobachten.three.activity'],
-                            my_dict['beobachten.three.activity'], my_dict['beobachten.three.content'],
-                            my_dict['Wahlbeobachtung'],
-                            my_dict['Erste Durchführung einer zentralen Tätigkeit'],
-                            my_dict['Zweite Durchführung einer zentralen Tätigkeit'],
-                            my_dict['Schlüsselsituation'],
-                            my_dict['Interview mit einer Lehrkraft'],
-                            my_dict['Wahl-Aufgabe']])
-            # w = csv.DictWriter(f, my_dict.keys(), delimiter=';', lineterminator='\n')
-            # w.writerow(my_dict)
-
-        # w.writeheader()
+            writer.writerow([my_dict.get('Vorname', ''), my_dict.get('Nachname', ''), my_dict.get('Matrikelnummer', ''),
+                            my_dict.get('Mail', ''), my_dict.get('Hauptfach.1', ''), my_dict.get('Hauptfach.2', ''),
+                            my_dict.get('Begleitung Alltag Lehrperson', ''),
+                            my_dict.get('beobachten.one.activity', ''), my_dict.get('beobachten.one.content', ''),
+                            my_dict.get('beobachten.two.activity', ''), my_dict.get('beobachten.two.content', ''),
+                            my_dict.get('beobachten.three.activity', ''), my_dict.get('beobachten.three.content', ''),
+                            my_dict.get('Wahlbeobachtung', ''),
+                            my_dict.get('Erste Durchführung einer zentralen Tätigkeit', ''),
+                            my_dict.get('Zweite Durchführung einer zentralen Tätigkeit', ''),
+                            my_dict.get('Schlüsselsituation', ''),
+                            my_dict.get('Interview mit einer Lehrkraft', ''),
+                            my_dict.get('Wahl-Aufgabe', '')])
