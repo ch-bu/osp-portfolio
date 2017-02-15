@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 """
 Put description here
 """
-    
+
 def get_simple_data(paragraphs):
     # Init result string
     result = ''
@@ -49,8 +49,11 @@ def get_activity(document, iter_paragraphs, word_file):
     sdtContentElements = []
     for element in dropdownList:
         sdtContentElements.append(element)
-    
-    activity = re.sub('<[^>]*>', '', str(element.findAll('t')[0]))
+
+    try:
+        activity = re.sub('<[^>]*>', '', str(element.findAll('t')[0]))
+    except UnboundLocalError:
+        activity = ''
 
     return activity
 
