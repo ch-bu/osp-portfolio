@@ -21,6 +21,7 @@ import os
 import shutil
 from docx import Document
 from wordhelper import get_data
+from xlsxwriter.workbook import Workbook
 import json
 import csv
 
@@ -113,7 +114,7 @@ if __name__ == '__main__':
 
 
     # Write results to disk
-    with open('results/data.csv', 'w') as f:
+    with open('results/portfolio-two.csv', 'w') as f:
 
         # Create writer for csv file
         writer = csv.writer(f, delimiter=';', quotechar='"', quoting=csv.QUOTE_MINIMAL, lineterminator='\n')
@@ -186,3 +187,16 @@ if __name__ == '__main__':
                             my_dict.get('Schlüsselsituation', ''),
                             my_dict.get('Interview mit einer Lehrkraft', ''),
                             my_dict.get('Wahl-Aufgabe', '')])
+
+    # Write Excel spreadsheet
+    # for csvfile in glob.glob(os.path.join('results', '*.csv')):
+    workbook = Workbook('results/portfolio-two.xlsx')
+    worksheet = workbook.add_worksheet()
+
+    with open('results/portfolio-two.csv', 'rt') as f:
+        reader = csv.reader(f, delimiter=';')
+        for r, row in enumerate(reader):
+            for c, col in enumerate(row):
+                worksheet.write(r, c, col)
+
+    workbook.close()
