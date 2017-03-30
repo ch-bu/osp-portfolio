@@ -19,12 +19,11 @@ def get_simple_data(paragraphs):
         result = result + ' ' + paragraph.text
 
     # Return string of paragraphs
-    return result
+    return result.replace('\n', ' ').replace('\r', '')
 
 
 def get_person(person_string):
     # Gets the values of the specific person
-
     first_name = re.search('Vorname:(.+?)Nachname', person_string).group(1).strip()
     last_name = re.search('Nachname:(.+?)Matrikelnummer', person_string).group(1).strip()
     number = re.search('Matrikelnummer:(.+?)E-Mail', person_string).group(1).strip()
@@ -75,8 +74,7 @@ def get_data(title, iter_paragraphs, document, word_file):
         title == 'Wahl-Aufgabe' or \
         title == 'Interview mit einer Lehrkraft' or \
         title == 'Schlüsselsituation':
+        print(title)
         return get_simple_data(iter_paragraphs)
     else:
         return None
-
-

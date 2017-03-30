@@ -16,7 +16,9 @@ import sys
 import zipfile
 import tarfile
 import re
+# import fnmatch
 import glob
+# import glob2
 import os
 import shutil
 from docx import Document
@@ -24,6 +26,11 @@ from wordhelper import get_data
 from xlsxwriter.workbook import Workbook
 import json
 import csv
+
+# Magic happens
+# not the unicode errors are gone
+reload(sys)
+sys.setdefaultencoding('utf8')
 
 
 def unzip_files(compressed_file):
@@ -50,11 +57,12 @@ def unzip_files(compressed_file):
         # Close tar file
         tar.close()
 
-    # Delete directory for new subject
+    # # Delete directory for new subject
     shutil.rmtree(temp_path)
 
-    # Return results
+    # # Return results
     return subject_results
+
 
 def return_file_content(document, word_file):
 
@@ -64,7 +72,6 @@ def return_file_content(document, word_file):
 
     # Add title of document to results
     title = document.paragraphs[0].text
-    results[title] = ''
 
     # Make sure not to include the first paragraph
     # that includes the title
@@ -77,20 +84,52 @@ def return_file_content(document, word_file):
     # Return content of word file in dictionary
     return results
 
+
 def analyze_files(temp_path):
 
     # Get all docx files
-    word_files = [word_file for word_file in glob.iglob(temp_path + '\\**\\*.docx', recursive=True)]
+    word_files = [word_file for word_file in glob.iglob(temp_path + '/**/*.docx', recursive=True)]
 
-    # Store results of all word files in this variable
-    res = []
+    # zip_files = [portfolio[0] + '/' + file for portfolio \
+    #             in os.walk(portfolio_path) for word_file in portfolio[2] \
+    #             if word_file.endswith(tuple('.docx'))]
+
+    # word_files = [word_file for word_file in glob2.iglob(temp_path + '/**/*.docx', with_matches=True)]
+    # print(glob2.iglob(temp_path + '/**/*.docx', with_matches=True))
+    # print(word_files)
+
+    # word_files = []
+    # for root, dirnames, filenames in os.walk(temp_path):
+    #     print(dirnames)
+    #     for filename in fnmatch.filter(filenames, '.*docx'):
+    #         word_files.append(os.path.join(root, filename))
+
+    # print(word_files)
+    # # Store results of all word files in this variable
+    # res = []
 
     # Loop over every word file
     for word_file in word_files:
-        # Get word document
-        document = Document(word_file)
+        # Ignore word backup files
+        if not re.match(r'.*~.*', word_file):
+            # Get word document
+            document = Document(word_file)
 
-        res.append(return_file_content(document, word_file))
+            res.append(return_file_content(document, word_file))
+
+    # try:
+    #     if res[0]['Zu Ihrer Person'].get('Nachname') == 'Friedrich':
+    #         print(res)
+    #         sys.exit('Found Friedrich')
+    # except SystemExit:
+    #     sys.exit('Worked as expected')
+    # except:
+    #     # print(sys.exc_info()[0])
+    #     pass
+
+
+    # if word_file[0]['Zu Ihrer Person'].get('Nachname') == 'Friedrich':
+    #         print(word_file)
 
     return res
 
@@ -101,19 +140,21 @@ if __name__ == '__main__':
 
     # Get dir of portfolio folder two
     file_path = os.path.dirname(os.path.realpath(__file__))
-    portfolio_path = file_path + '\\portfolios-two'
-    temp_path = file_path + '\\temp'
+    portfolio_path = file_path + '/portfolios-two'
+    temp_path = file_path + '/temp'
 
     # Get all compressed files and save path in zip_files
     # file_extensions = ['.zip', '.tar', '.7s']
     file_extensions = ['.zip', '.tar']
-    zip_files = [portfolio for portfolio in os.listdir(portfolio_path) if portfolio.endswith(tuple(file_extensions))]
+    zip_files = [portfolio[0] + '/' + file for portfolio \
+                in os.walk(portfolio_path) for file in portfolio[2] \
+                if file.endswith(tuple(file_extensions))]
 
     # Get data from all subjects
-    data_subjects = list(map(lambda compressed_file: unzip_files(portfolio_path + '\\' + compressed_file), zip_files))
+    data_subjects = list(map(lambda compressed_file: \
+            unzip_files(compressed_file), zip_files))
 
-
-    # Write results to disk
+    # # Write results to disk
     with open('results/portfolio-two.csv', 'w') as f:
 
         # Create writer for csv file
@@ -156,15 +197,15 @@ if __name__ == '__main__':
                 if key == 'Beobachten. Dritte Tätigkeit':
                     curr_dict = word_file[key]
                     my_dict['beobachten.three.activity'] = curr_dict['activity']
-                    my_dict['beobachten.three.content'] = curr_dict['content']
+                    my_dict['beobachten.three.content'] = curr_dict['content'].replace('\n', ' ').replace('\r', '')
                 elif key == 'Beobachten. Zweite Tätigkeit':
                     curr_dict = word_file[key]
                     my_dict['beobachten.two.activity'] = curr_dict['activity']
-                    my_dict['beobachten.two.content'] = curr_dict['content']
+                    my_dict['beobachten.two.content'] = curr_dict['content'].replace('\n', ' ').replace('\r', '')
                 elif key == 'Beobachten. Erste Tätigkeit':
                     curr_dict = word_file[key]
                     my_dict['beobachten.one.activity'] = curr_dict['activity']
-                    my_dict['beobachten.one.content'] = curr_dict['content']
+                    my_dict['beobachten.one.content'] = curr_dict['content'].replace('\n', ' ').replace('\r', '')
                 elif key == 'Wahlbeobachtung' or \
                      key == 'Erste Durchführung einer zentralen Tätigkeit' or \
                      key == 'Zweite Durchführung einer zentralen Tätigkeit' or \
@@ -172,7 +213,7 @@ if __name__ == '__main__':
                      key == 'Begleitung Alltag Lehrperson' or \
                      key == 'Interview mit einer Lehrkraft' or \
                      key == 'Wahl-Aufgabe':
-                        my_dict[key] = word_file[key]
+                        my_dict[key] = word_file[key].replace('\n', ' ').replace('\r', '')
 
             # Write row for subject
             writer.writerow([my_dict.get('Vorname', ''), my_dict.get('Nachname', ''), my_dict.get('Matrikelnummer', ''),
