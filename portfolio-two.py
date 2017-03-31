@@ -187,7 +187,21 @@ if __name__ == '__main__':
                      key == 'Begleitung Alltag Lehrperson' or \
                      key == 'Interview mit einer Lehrkraft' or \
                      key == 'Wahl-Aufgabe':
-                        my_dict[key] = word_file[key].replace('\n', ' ').replace('\r', '')
+                        # Store content temporarily
+                        content = word_file[key].replace('\n', ' ').replace('\r', '')
+
+                        # Escape special characters to avoid stupid bug
+                        # Not beautiful, but it works.
+                        if key == 'Erste Durchführung einer zentralen Tätigkeit':
+                            key = 'Erste Durchfuehrung einer zentralen Taetigkeit'
+                        elif key == 'Zweite Durchführung einer zentralen Tätigkeit':
+                            key = 'Zweite Durchfuehrung einer zentralen Taetigkeit'
+                        elif key == 'Schlüsselsituation':
+                            key = 'Schluesselsituation'
+
+                        my_dict[key] = content
+
+            # print(my_dict.get('Erste Durchführung einer zentralen Tätigkeit', ''))
 
             # Write row for subject
             writer.writerow([my_dict.get('Vorname', ''), my_dict.get('Nachname', ''), my_dict.get('Matrikelnummer', ''),
@@ -197,9 +211,9 @@ if __name__ == '__main__':
                             my_dict.get('beobachten.two.activity', ''), my_dict.get('beobachten.two.content', ''),
                             my_dict.get('beobachten.three.activity', ''), my_dict.get('beobachten.three.content', ''),
                             my_dict.get('Wahlbeobachtung', ''),
-                            my_dict.get('Erste Durchführung einer zentralen Tätigkeit', ''),
-                            my_dict.get('Zweite Durchführung einer zentralen Tätigkeit', ''),
-                            my_dict.get('Schlüsselsituation', ''),
+                            my_dict.get('Erste Durchfuehrung einer zentralen Taetigkeit', ''),
+                            my_dict.get('Zweite Durchfuehrung einer zentralen Taetigkeit', ''),
+                            my_dict.get('Schluesselsituation', ''),
                             my_dict.get('Interview mit einer Lehrkraft', ''),
                             my_dict.get('Wahl-Aufgabe', '')])
 
