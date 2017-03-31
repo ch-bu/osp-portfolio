@@ -74,7 +74,6 @@ def get_data(title, iter_paragraphs, document, word_file):
         title == 'Wahl-Aufgabe' or \
         title == 'Interview mit einer Lehrkraft' or \
         title == 'Schlüsselsituation':
-        print(title)
         return get_simple_data(iter_paragraphs)
     else:
         return None

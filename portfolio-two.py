@@ -16,9 +16,9 @@ import sys
 import zipfile
 import tarfile
 import re
-# import fnmatch
-import glob
-# import glob2
+import fnmatch
+# import glob
+import glob2
 import os
 import shutil
 from docx import Document
@@ -28,12 +28,14 @@ import json
 import csv
 
 # Magic happens
-# not the unicode errors are gone
+# note the unicode errors are gone
 reload(sys)
 sys.setdefaultencoding('utf8')
 
 
 def unzip_files(compressed_file):
+
+    print('Processing %s' % compressed_file)
 
     # Decompress zip file
     if compressed_file.endswith('.zip'):
@@ -86,50 +88,22 @@ def return_file_content(document, word_file):
 
 
 def analyze_files(temp_path):
-
     # Get all docx files
-    word_files = [word_file for word_file in glob.iglob(temp_path + '/**/*.docx', recursive=True)]
+    word_files = [os.path.join(root, name) for root, dirs, files \
+                    in os.walk(temp_path)
+                    for name in files if (not re.match(r'.*~.*', name)) and \
+                    (not re.match(r'.*MACOSX.*', root)) and \
+                    name.endswith('.docx') and (not re.match(r'\.\_.*', name))]
 
-    # zip_files = [portfolio[0] + '/' + file for portfolio \
-    #             in os.walk(portfolio_path) for word_file in portfolio[2] \
-    #             if word_file.endswith(tuple('.docx'))]
-
-    # word_files = [word_file for word_file in glob2.iglob(temp_path + '/**/*.docx', with_matches=True)]
-    # print(glob2.iglob(temp_path + '/**/*.docx', with_matches=True))
-    # print(word_files)
-
-    # word_files = []
-    # for root, dirnames, filenames in os.walk(temp_path):
-    #     print(dirnames)
-    #     for filename in fnmatch.filter(filenames, '.*docx'):
-    #         word_files.append(os.path.join(root, filename))
-
-    # print(word_files)
-    # # Store results of all word files in this variable
-    # res = []
+    res = []
 
     # Loop over every word file
     for word_file in word_files:
-        # Ignore word backup files
-        if not re.match(r'.*~.*', word_file):
-            # Get word document
-            document = Document(word_file)
+        # print(word_file)
+        # Get word document
+        document = Document(word_file)
 
-            res.append(return_file_content(document, word_file))
-
-    # try:
-    #     if res[0]['Zu Ihrer Person'].get('Nachname') == 'Friedrich':
-    #         print(res)
-    #         sys.exit('Found Friedrich')
-    # except SystemExit:
-    #     sys.exit('Worked as expected')
-    # except:
-    #     # print(sys.exc_info()[0])
-    #     pass
-
-
-    # if word_file[0]['Zu Ihrer Person'].get('Nachname') == 'Friedrich':
-    #         print(word_file)
+        res.append(return_file_content(document, word_file))
 
     return res
 

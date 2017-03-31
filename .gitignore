@@ -1,3 +1,6 @@
 ~*
 temp/
 __pycache__/
+portfolios-two/
+results/
+**/*.pyc
